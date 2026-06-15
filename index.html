@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuadCheck — FPV Compatibility Checker</title>
+  <meta name="description" content="Build your FPV quad and catch every compatibility conflict before you buy. No more wasted money on wrong parts." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 6rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 153, 34, 0.15);
+      border: 1px solid rgba(99, 153, 34, 0.3);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #97c459;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #97c459;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 600;
+      line-height: 1.2;
+      color: #ffffff;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    h1 span {
+      color: #97c459;
+    }
+
+    .subtitle {
+      font-size: 17px;
+      color: #999;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 520px;
+    }
+
+    .form-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #666;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="email"] {
+      flex: 1;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 0 14px;
+      height: 44px;
+      font-size: 14px;
+      color: #f0f0f0;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="email"]::placeholder { color: #444; }
+    input[type="email"]:focus { border-color: #97c459; }
+
+    button.primary {
+      background: #97c459;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 10px;
+      padding: 0 20px;
+      height: 44px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    button.primary:hover { background: #a8d066; }
+    button.primary:active { transform: scale(0.98); }
+
+    .form-note {
+      font-size: 12px;
+      color: #444;
+      margin-top: 0.75rem;
+    }
+
+    .success-msg {
+      display: none;
+      background: rgba(99, 153, 34, 0.1);
+      border: 1px solid rgba(99, 153, 34, 0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #97c459;
+      margin-top: 1rem;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #444;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 3rem;
+    }
+
+    .feature {
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .feature-icon {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .feature h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e0e0e0;
+      margin-bottom: 4px;
+    }
+
+    .feature p {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .audience {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .audience-item h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e0e0e0;
+      margin-bottom: 4px;
+    }
+
+    .audience-item p {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .testimonial {
+      background: #141414;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 3rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #1e1e2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7f77dd;
+      flex-shrink: 0;
+    }
+
+    .testimonial blockquote {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .testimonial cite {
+      font-size: 12px;
+      color: #444;
+      font-style: normal;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #333;
+      padding-top: 2rem;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    @media (max-width: 480px) {
+      .form-row { flex-direction: column; }
+      button.primary { width: 100%; }
+      .audience { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="badge">Early access — limited spots</div>
+
+    <h1>Build your FPV quad.<br><span>Catch every conflict</span> before you buy.</h1>
+
+    <p class="subtitle">
+      Stop cross-referencing specs across 12 browser tabs. Add your parts and QuadCheck flags compatibility issues — voltage mismatches, stack sizing, protocol conflicts — instantly.
+    </p>
+
+    <div class="form-card">
+      <label class="form-label" for="email">Join the waitlist</label>
+      <div class="form-row">
+        <input type="email" id="email" placeholder="your@email.com" />
+        <button class="primary" onclick="handleSubmit()">Get early access →</button>
+      </div>
+      <p class="form-note">No spam. Just a heads-up when it's ready.</p>
+      <div class="success-msg" id="success">
+        ✓ You're on the list! We'll reach out as soon as QuadCheck is ready.
+      </div>
+    </div>
+
+    <p class="section-label">What it catches</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Voltage mismatches</h3>
+        <p>ESC and battery cell count conflicts</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📐</div>
+        <h3>Stack sizing</h3>
+        <p>Frame and stack mount pattern checks</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📡</div>
+        <h3>Protocol conflicts</h3>
+        <p>DSHOT, UART, and receiver compatibility</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚖️</div>
+        <h3>Weight and thrust</h3>
+        <p>Motor KV and prop pairing estimates</p>
+      </div>
+    </div>
+
+    <p class="section-label">Built for every builder</p>
+    <div class="audience">
+      <div class="audience-item">
+        <h3>First build?</h3>
+        <p>No experience needed</p>
+      </div>
+      <div class="audience-item">
+        <h3>1–2 builds in?</h3>
+        <p>Skip the research grind</p>
+      </div>
+      <div class="audience-item">
+        <h3>Veteran builder?</h3>
+        <p>Save hours per build</p>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="avatar">R</div>
+      <div>
+        <blockquote>"I ordered a stack that didn't fit my frame and a VTX that couldn't handle my battery voltage. I wish this existed before I wasted $80."</blockquote>
+        <cite>— FPV builder, r/fpv</cite>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2026 QuadCheck · Built by a builder, for builders
+    </div>
+
+  </div>
+
+  <script>
+    function handleSubmit() {
+      const email = document.getElementById('email').value;
+      if (!email || !email.includes('@')) {
+        document.getElementById('email').focus();
+        return;
+      }
+      document.getElementById('success').style.display = 'block';
+      document.getElementById('email').value = '';
+      document.querySelector('button.primary').disabled = true;
+      document.querySelector('button.primary').textContent = 'You\'re on the list ✓';
+    }
+  </script>
+</body>
+</html>
