@@ -142,6 +142,17 @@
       margin-top: 1rem;
     }
 
+    .error-msg {
+      display: none;
+      background: rgba(226, 75, 74, 0.1);
+      border: 1px solid rgba(226, 75, 74, 0.25);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #f09595;
+      margin-top: 1rem;
+    }
+
     .section-label {
       font-size: 11px;
       font-weight: 600;
@@ -269,14 +280,22 @@
     </p>
 
     <div class="form-card">
-      <label class="form-label" for="email">Join the waitlist</label>
-      <div class="form-row">
-        <input type="email" id="email" placeholder="your@email.com" />
-        <button class="primary" onclick="handleSubmit()">Get early access →</button>
-      </div>
+      <label class="form-label" for="mce-EMAIL">Join the waitlist</label>
+      <form action="https://gmail.us4.list-manage.com/subscribe/post?u=6ec9f67a66636f4cb14f7964d&amp;id=7e7d4fdead&amp;f_id=00290be9f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <div class="form-row">
+          <input type="email" name="EMAIL" id="mce-EMAIL" placeholder="your@email.com" required />
+          <button type="submit" class="primary">Get early access →</button>
+        </div>
+        <div aria-hidden="true" style="position: absolute; left: -5000px;">
+          <input type="text" name="b_6ec9f67a66636f4cb14f7964d_7e7d4fdead" tabindex="-1" value="" />
+        </div>
+      </form>
       <p class="form-note">No spam. Just a heads-up when it's ready.</p>
       <div class="success-msg" id="success">
         ✓ You're on the list! We'll reach out as soon as QuadCheck is ready.
+      </div>
+      <div class="error-msg" id="error">
+        Something went wrong — please try again.
       </div>
     </div>
 
@@ -335,17 +354,20 @@
   </div>
 
   <script>
-    function handleSubmit() {
-      const email = document.getElementById('email').value;
+    const form = document.getElementById('mc-embedded-subscribe-form');
+    form.addEventListener('submit', function(e) {
+      const email = document.getElementById('mce-EMAIL').value;
       if (!email || !email.includes('@')) {
-        document.getElementById('email').focus();
+        e.preventDefault();
+        document.getElementById('mce-EMAIL').focus();
         return;
       }
-      document.getElementById('success').style.display = 'block';
-      document.getElementById('email').value = '';
-      document.querySelector('button.primary').disabled = true;
-      document.querySelector('button.primary').textContent = 'You\'re on the list ✓';
-    }
+      document.querySelector('button[type="submit"]').disabled = true;
+      document.querySelector('button[type="submit"]').textContent = 'You\'re on the list ✓';
+      setTimeout(() => {
+        document.getElementById('success').style.display = 'block';
+      }, 800);
+    });
   </script>
 </body>
 </html>
